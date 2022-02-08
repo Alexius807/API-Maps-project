@@ -7,10 +7,9 @@ import os
 def update_map(x, y):
     x, y = map(str, (x, y))
     api_server = "http://static-maps.yandex.ru/1.x/"
-    delta = "0.002"
     params = {
         "ll": f'{x},{y}',
-        "spn": ",".join([delta, delta]),
+        "spn": ",".join([str(delta), str(delta)]),
         "l": "map"
     }
 
@@ -29,23 +28,11 @@ def update_map(x, y):
         print("Ошибка записи временного файла:", ex)
         sys.exit(2)
 
-    ## Инициализируем pygame
-    # pygame.init()
-    # screen = pygame.display.set_mode((600, 450))
-    ## Рисуем картинку, загружаемую из только что созданного файла.
-    # screen.blit(pygame.image.load(map_file), (0, 0))
-    ## Переключаем экран и ждем закрытия окна.
-    # pygame.display.flip()
-    # while pygame.event.wait().type != pygame.QUIT:
-    #    pass
-
-    # pygame.quit()
-    ## Удаляем за собой файл с изображением.
-    # os.remove(map_file)
-
 
 x, y = -71.092072, 42.359628
 map_file = "map.png"
+delta = 0.002
+
 update_map(x, y)
 pygame.init()
 screen = pygame.display.set_mode((600, 450))
@@ -58,19 +45,35 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                y -= 450
+                y += delta * 1.8
+                if x <= -85:
+                    x = x + 85 + 85
+                elif x >= 85:
+                    x = -(x - 85) - 85
                 update_map(x, y)
                 screen.blit(pygame.image.load(map_file), (0, 0))
             if event.key == pygame.K_DOWN:
-                y += 450
+                y -= delta * 1.8
+                if x <= -85:
+                    x = x + 85 + 85
+                elif x >= 85:
+                    x = -(x - 85) - 85
                 update_map(x, y)
                 screen.blit(pygame.image.load(map_file), (0, 0))
             if event.key == pygame.K_RIGHT:
-                x += 600
+                x += delta * 2.5
+                if x <= -180:
+                    x = x + 180 + 179
+                elif x >= 180:
+                    x = -(x - 180) - 179
                 update_map(x, y)
                 screen.blit(pygame.image.load(map_file), (0, 0))
             if event.key == pygame.K_LEFT:
-                x -= 600
+                x -= delta * 2.5
+                if x <= -180:
+                    x = x + 180 + 179
+                elif x >= 180:
+                    x = -(x - 180) - 179
                 update_map(x, y)
                 screen.blit(pygame.image.load(map_file), (0, 0))
         if event.type == pygame.QUIT:
